@@ -332,6 +332,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pool:
   - {fileID: 7468931856018159309, guid: f506027e24c50c443b77674dd5a2d388, type: 3}
+  endpoints:
+  - {fileID: 7468931856018159309, guid: f34fa76ad0449604485531b823e15817, type: 3}
+  instances: []
+  roomCount: 15
 --- !u!4 &1681931456
 Transform:
   m_ObjectHideFlags: 0

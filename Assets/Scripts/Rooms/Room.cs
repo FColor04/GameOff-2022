@@ -7,10 +7,16 @@ namespace Rooms
 {
     public class Room : MonoBehaviour
     {
-        [Range(3, 40)]
-        public int width = 3;
-        [Range(3, 40)]
-        public int depth = 3;
+        [HideInInspector]
+        public RoomController controller;
+        [Range(1, 40)]
+        public float width = 3;
+        [Range(1, 40)]
+        public float depth = 3;
+
+        public float X => transform.position.x;
+        public float Z => transform.position.z;
+        
         [HideInInspector]
         public List<Exit> exits = new();
         
@@ -26,19 +32,60 @@ namespace Rooms
             exits = GetComponentsInChildren<Exit>().ToList();
         }
 
-        public void PropagateRandomExit(List<Room> pool)
+        public bool PropagateExit(Exit exit, List<Room> pool, out Room newInstance)
         {
-            //This does not work but is close
-            // var propagatedExit = exits.Random();
-            // var propagatedExitRotation = propagatedExit.transform.rotation;
-            // var propagatedExitPosition = propagatedExit.transform.position - transform.position;
-            // var newRoom = Instantiate(pool.Random(), Vector3.zero, Quaternion.identity);
-            // newRoom.transform.SetParent(propagatedExit.transform);
-            // var randomExit = newRoom.exits.Random();
-            // var exitOffset = -randomExit.transform.position + propagatedExitPosition;
-            // var exitRotation = Quaternion.Inverse(randomExit.transform.rotation);
-            // newRoom.transform.position = transform.position + exitRotation * exitOffset;
-            // newRoom.transform.rotation = exitRotation;
+            var newRoom = Instantiate(pool.Random(), Vector3.zero, Quaternion.identity);
+            newRoom.controller = controller;
+            
+            var propagatedExit = exit;
+            var randomExit = newRoom.exits.Random();
+            
+            //Match exit rotations
+            newRoom.transform.eulerAngles = -randomExit.transform.localEulerAngles + propagatedExit.transform.localEulerAngles + Vector3.up * 180f;
+            newRoom.transform.SetParent(propagatedExit.transform);
+            newRoom.transform.localPosition = newRoom.transform.localRotation * -randomExit.transform.localPosition;
+
+            if (controller.CheckRectCollision(newRoom.X, newRoom.Z, newRoom.width, newRoom.depth))
+            {
+                Destroy(newRoom.gameObject);
+                newInstance = null;
+                return false;
+            }
+            controller.instances.Add(newRoom);
+            newInstance = newRoom;
+            return true;
+        }
+        
+        public bool PropagateRandomExit(List<Room> pool, out Room newInstance)
+        {
+            for (int i = 0; i < 1000; i++)
+            {
+                if (PropagateExit(exits.Random(), pool, out Room roomInstance))
+                {
+                    newInstance = roomInstance;
+                    return true;
+                }
+            }
+
+            newInstance = null;
+            return false;
+        }
+
+        public int PropagateEveryExit(List<Room> pool, out List<Room> newRooms)
+        {
+            newRooms = new();
+            int propagatedCount = 0;
+            for (var i = 0; i < exits.Count; i++)
+            {
+                var exit = exits[i];
+                if (PropagateExit(exit, pool, out var room))
+                {
+                    propagatedCount++;
+                    newRooms.Add(room);
+                }
+            }
+
+            return propagatedCount;
         }
     }
 }
