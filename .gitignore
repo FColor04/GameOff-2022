@@ -63,3 +63,4 @@ crashlytics-build.properties
 /Assets/Plugins/Borodar/*
 /Assets/Plugins/Borodar
 /Assets/Plugins/Borodar.meta
+/Packages/packages-lock.json
