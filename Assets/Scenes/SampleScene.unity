@@ -467,9 +467,10 @@ MonoBehaviour:
   <Camera>k__BackingField: {fileID: 963194228}
   MinAngle: -90
   MaxAngle: 90
-  smoothingTime: 0.03
+  smoothingTime: 0.045
+  movementSmoothingTime: 0.2
   sidewaysTilt: 0.05
-  sidewaysMovement: 0.05
+  sidewaysMovement: 0.04
   maxZrotation: 5
 --- !u!114 &375801327
 MonoBehaviour:
@@ -1771,9 +1772,9 @@ CapsuleCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.3
-  m_Height: 1.15
+  m_Height: 1.3
   m_Direction: 1
-  m_Center: {x: 0, y: -0.5, z: 0}
+  m_Center: {x: 0, y: -0.19999999, z: 0}
 --- !u!1 &1892813047
 GameObject:
   m_ObjectHideFlags: 0

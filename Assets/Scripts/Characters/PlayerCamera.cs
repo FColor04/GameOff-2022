@@ -10,6 +10,7 @@ public class PlayerCamera : MonoBehaviour
     
     public float MinAngle = -90f + float.Epsilon, MaxAngle = 90f - float.Epsilon;
     public float smoothingTime = 0.1f;
+    public float movementSmoothingTime = 0.1f;
     public float sidewaysTilt = 0.05f;
     public float sidewaysMovement = 0.05f;
     public float maxZrotation = 5f;
@@ -40,7 +41,7 @@ public class PlayerCamera : MonoBehaviour
         Camera.localEulerAngles = SmoothDampEuler(Camera.localEulerAngles,
             new Vector3(-rx, ry, Mathf.Clamp(relativeVelocity.x * sidewaysTilt, -maxZrotation, maxZrotation)), ref velocityTilt, smoothingTime);
         Camera.localPosition = Vector3.SmoothDamp(Camera.localPosition, Quaternion.Euler(0, ry, 0) * Vector3.left * (_playerMovement.MovementInput.x * (-relativeVelocity.x * sidewaysMovement)), 
-            ref velocityMovement, smoothingTime);
+            ref velocityMovement, movementSmoothingTime);
     }
     
     public static Vector3 SmoothDampEuler(Vector3 current, Vector3 target, ref Vector3 currentVelocity, float smoothTime)
