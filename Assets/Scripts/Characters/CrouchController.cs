@@ -28,8 +28,8 @@ public class CrouchController : MonoBehaviour
     {
         var spineLen = crouching ? crouchLen : standingLen;
         headRB.transform.localPosition = Vector3.up * spineLen;
-        spineCollider.height = crouchLen + spineCollider.radius / 2f;
-        spineCollider.center = spineCollider.center._x0z() - Vector3.up * (crouchLen / 2f + spineCollider.radius);
+        spineCollider.height = crouchLen + spineCollider.radius;
+        spineCollider.center = spineCollider.center._x0z() - Vector3.up * (crouchLen / 2f - spineCollider.radius);
     }
 
     void OnEnable() => headRB.sleepThreshold = -1f;
