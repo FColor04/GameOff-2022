@@ -5,6 +5,9 @@ namespace Rooms
 {
     public class Exit : MonoBehaviour
     {
+        [HideInInspector]
+        public RoomController controller;
+        public bool occupied;
         private void OnDrawGizmosSelected()
         {
             Gizmos.color = new Color(0f, 0f, 1f, 0.3f);

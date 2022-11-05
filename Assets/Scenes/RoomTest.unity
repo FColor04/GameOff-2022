@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
+  m_SkyboxMaterial: {fileID: 0}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028352, g: 0.22571376, b: 0.30692244, a: 1}
+  m_IndirectSpecularColor: {r: 261.9007, g: 324.45554, b: 429.43463, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -332,10 +332,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pool:
   - {fileID: 7468931856018159309, guid: f506027e24c50c443b77674dd5a2d388, type: 3}
+  - {fileID: 7468931856018159309, guid: 26b97e658caceb941af5b29ff235c086, type: 3}
+  - {fileID: 7468931856018159309, guid: 102ac3c9cd3cd484fba7c15f94db6822, type: 3}
   endpoints:
   - {fileID: 7468931856018159309, guid: f34fa76ad0449604485531b823e15817, type: 3}
   instances: []
-  roomCount: 15
+  roomCount: 16
 --- !u!4 &1681931456
 Transform:
   m_ObjectHideFlags: 0
@@ -344,7 +346,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1681931454}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.9673324, y: 4.5427485, z: -2.568337}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
