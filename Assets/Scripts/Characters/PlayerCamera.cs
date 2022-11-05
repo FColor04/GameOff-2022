@@ -20,11 +20,14 @@ public class PlayerCamera : MonoBehaviour
     public float RY { get => ry; }
     public float RX { get => rx; }
     private Rigidbody _rigidbody;
-    private Vector3 velocity;
+    private PlayerMovement _playerMovement;
+    private Vector3 velocityTilt;
+    private Vector3 velocityMovement;
 
     private void Awake()
     {
         _rigidbody = GetComponent<Rigidbody>();
+        _playerMovement = GetComponent<PlayerMovement>();
     }
 
     void Update()
@@ -35,7 +38,9 @@ public class PlayerCamera : MonoBehaviour
         var relativeVelocity = Quaternion.Euler(0, ry, 0) * _rigidbody.velocity;
             
         Camera.localEulerAngles = SmoothDampEuler(Camera.localEulerAngles,
-            new Vector3(-rx, ry, relativeVelocity.x * sidewaysTilt), ref velocity, smoothingTime);
+            new Vector3(-rx, ry, Mathf.Clamp(relativeVelocity.x * sidewaysTilt, -maxZrotation, maxZrotation)), ref velocityTilt, smoothingTime);
+        Camera.localPosition = Vector3.SmoothDamp(Camera.localPosition, Quaternion.Euler(0, ry, 0) * Vector3.left * (_playerMovement.MovementInput.x * (-relativeVelocity.x * sidewaysMovement)), 
+            ref velocityMovement, smoothingTime);
     }
     
     public static Vector3 SmoothDampEuler(Vector3 current, Vector3 target, ref Vector3 currentVelocity, float smoothTime)
