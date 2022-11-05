@@ -64,3 +64,5 @@ crashlytics-build.properties
 /Assets/Plugins/Borodar
 /Assets/Plugins/Borodar.meta
 /Packages/packages-lock.json
+.vscode/launch.json
+Packages/packages-lock.json

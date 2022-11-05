@@ -12,27 +12,32 @@ public class VelocityController : MonoBehaviour
 
     public struct MovementOverride
     {
-        public enum BlendMode { Additive, Overwrite, Maximum }
-        public BlendMode blendMode;
+        public VelocityBlendMode blendMode;
+        public VelocityChannelMask channelMask;
         public Func<float, float> speedCurve;
         public Vector3 direction;
 
+        public Vector3 ChannelMaskVector { get => new(((int)channelMask & 0b001), ((int)channelMask & 0b010) >> 1, ((int)channelMask & 0b100) >> 2); }
+
         public MovementOverride(Vector3 direction,
                                 Func<float, float> speedCurve,
-                                BlendMode blendMode = BlendMode.Maximum)
+                                VelocityBlendMode blendMode = VelocityBlendMode.MaximumMagnitude,
+                                VelocityChannelMask channelMask = VelocityChannelMask.XYZ)
         {
             this.direction = direction;
             this.blendMode = blendMode;
             this.speedCurve = speedCurve;
+            this.channelMask = channelMask;
         }
         public MovementOverride(Vector3 direction,
                                 float constantSpeed,
-                                BlendMode blendMode = BlendMode.Maximum)
-        : this(direction, (t) => constantSpeed, blendMode) { }
+                                VelocityBlendMode blendMode = VelocityBlendMode.MaximumMagnitude,
+                                VelocityChannelMask channelMask = VelocityChannelMask.XYZ)
+        : this(direction, (t) => constantSpeed, blendMode, channelMask) { }
 
         public MovementOverride(Vector3 desiredVelocity,
-                                BlendMode blendMode = BlendMode.Maximum
-                                ) : this(desiredVelocity.normalized, (t) => desiredVelocity.magnitude, blendMode) { }        
+                                VelocityBlendMode blendMode = VelocityBlendMode.MaximumMagnitude,
+                                VelocityChannelMask channelMask = VelocityChannelMask.XYZ) : this(desiredVelocity.normalized, (t) => desiredVelocity.magnitude, blendMode, channelMask) { }
     }
 
     private struct MovementOverrideInstance
@@ -86,6 +91,7 @@ public class VelocityController : MonoBehaviour
     private void ProcessMovementOverrides(ref Vector3 currentVelocity)
     {
         var startVelocity = currentVelocity; //memorize start movement in case a movementOverride has its blend mode set to overwrite
+        var channelsOverridden = 0;
         //iterate over remaining entries
         foreach (var priority in movementOverrideInstances.Keys.OrderByDescending(x => x))
             foreach (var movementOverrideInstance in movementOverrideInstances[priority])
@@ -95,18 +101,24 @@ public class VelocityController : MonoBehaviour
 
                 var speed = movementOverrideData.speedCurve(t);
                 var newMovement = speed * movementOverrideData.direction.normalized;
+                var maskedVelocity = Vector3.Scale(newMovement, movementOverrideData.ChannelMaskVector);
 
                 switch (movementOverrideData.blendMode)
                 {
-                    case MovementOverride.BlendMode.Additive:
-                        currentVelocity += newMovement;
+                    case VelocityBlendMode.Additive:
+                        currentVelocity += maskedVelocity;
                         break;
-                    case MovementOverride.BlendMode.Maximum: //pick whatever movement override has a larger magnitude
-                        currentVelocity = (currentVelocity.sqrMagnitude > speed * speed) ? currentVelocity : newMovement;
+                    case VelocityBlendMode.MaximumMagnitude: //pick components so the resulting velocity has the maximum possible magnitude
+                        currentVelocity = VectorMath.MaxMagnitude(currentVelocity, maskedVelocity);
                         break;
-                    case MovementOverride.BlendMode.Overwrite: //overwrite all lower priority movement for this physics step
-                        currentVelocity += newMovement - startVelocity;
-                        return; // we can exit early, because we sorted by priority
+                    case VelocityBlendMode.Overwrite: //overwrite all lower priority movement for this physics step                        
+                        var channelsOverriddenMask = Vector3.one - new Vector3(((int)channelsOverridden & 0b001), ((int)channelsOverridden & 0b010) >> 1, ((int)channelsOverridden & 0b100) >> 2);
+                        var combinedMask = Vector3.Scale(channelsOverriddenMask, movementOverrideData.ChannelMaskVector);
+                        currentVelocity += Vector3.Scale(newMovement - startVelocity, combinedMask);
+                        channelsOverridden |= (int)movementOverrideData.channelMask;
+                        if (channelsOverridden == 0b111)
+                            return; // we can exit early, because we sorted by priority
+                        break;
                 }
             }
     }
@@ -123,3 +135,16 @@ public class VelocityController : MonoBehaviour
         }
     }
 }
+
+public enum VelocityChannelMask
+{
+    X = 0b001,
+    Y = 0b010,
+    Z = 0b100,
+    XY = 0b011,
+    XZ = 0b101,
+    YZ = 0b110,
+    XYZ = 0b111
+}
+
+public enum VelocityBlendMode { Additive, Overwrite, MaximumMagnitude }
