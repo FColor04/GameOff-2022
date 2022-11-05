@@ -8,8 +8,11 @@ public class CrouchController : MonoBehaviour
 {
     [SerializeField] private ConfigurableJoint spineJoint;
     [SerializeField] private Rigidbody bodyRB;
-    [SerializeField] private Rigidbody headRB;    
+    [SerializeField] private Rigidbody headRB;
     [SerializeField] private CapsuleCollider spineCollider;
+    [SerializeField] private CapsuleCollider legsCollider;
+
+    public float antiDecapitationLimit = .5f;
     public float crouchLen;
     public float standingLen;
     private bool crouching = false;
@@ -28,8 +31,10 @@ public class CrouchController : MonoBehaviour
     {
         var spineLen = crouching ? crouchLen : standingLen;
         headRB.transform.localPosition = Vector3.up * spineLen;
-        spineCollider.height = crouchLen + spineCollider.radius;
-        spineCollider.center = spineCollider.center._x0z() - Vector3.up * (crouchLen / 2f - spineCollider.radius);
+        legsCollider.height = crouchLen + spineCollider.radius;
+        legsCollider.center = Vector3.up * legsCollider.height / 2f;
+        spineCollider.height = standingLen - crouchLen + spineCollider.radius * 2f;
+        spineCollider.center = spineCollider.center._x0z() - Vector3.up * (spineCollider.height / 2f - spineCollider.radius);
     }
 
     void OnEnable() => headRB.sleepThreshold = -1f;
@@ -40,7 +45,8 @@ public class CrouchController : MonoBehaviour
         headRB.transform.localPosition = headRB.transform.localPosition._0y0();
         var spineLen = crouching ? crouchLen : standingLen;
         spineJoint.connectedAnchor = transform.TransformPoint(Vector3.up * spineLen);
-        if(bodyRB.velocity.y > 0) headRB.velocity = Vector3.up * bodyRB.velocity.y;
-
+        var isWorriedAboutDecapitation = headRB.transform.localPosition.y > spineLen + antiDecapitationLimit;        
+        spineCollider.enabled = !isWorriedAboutDecapitation;
+        if (bodyRB.velocity.y > 0) headRB.velocity = Vector3.up * bodyRB.velocity.y;
     }
 }
