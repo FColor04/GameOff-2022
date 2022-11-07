@@ -6,6 +6,21 @@ using System.Linq;
 public static class VectorUtil
 {
 
+    public static Vector2Int Rotate(this Vector2Int vector, int rotation)
+    {
+        var x1 = rotation & 1;
+        var x2 = (rotation & 2) >> 1;
+        var xor = x1 ^ x2;
+
+        var baseX = new Vector2Int(1 - xor - x2, x2 - xor);
+        var baseY = new Vector2Int(xor - x2, 1 - x2 - xor);
+
+        return vector.x * baseX + vector.y * baseY;
+    }
+
+    public static int Rotation(this Vector2Int vector) => (1 - vector.x) * vector.x * vector.x + (2 - vector.y) * vector.y * vector.y;
+
+
     public static Vector3[] GetArcedPath(Vector3 start, Vector3 end, float height, float step = .1f)
     {
         var length = (start - end).magnitude;

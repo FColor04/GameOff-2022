@@ -7,40 +7,42 @@ namespace Rooms
 {
     public class Room : MonoBehaviour
     {
-        private RoomController _controller;
+        public int gridRowCount = 3;
+        public int gridColumnCount = 3;
 
-        public RoomController controller {
-            get => _controller;
-            set
+        public int rotation; // 0,1,2,3
+        public Vector2Int MinCorner { get => Vector2Int.FloorToInt(transform.position._xz() / RoomController.GRID_SIZE); }
+
+        public virtual Vector2Int[] OccupiedCells
+        {
+            get
             {
-                _controller = value;
-                foreach (var exit in exits)
-                {
-                    exit.controller = value;
-                }
+                var tiles = new Vector2Int[gridRowCount * gridColumnCount];
+                for (int x = 0; x < gridColumnCount; x++)
+                    for (int z = 0; z < gridRowCount; z++)
+                        tiles[x * gridRowCount + z] = MinCorner + new Vector2Int(x, z);
+                return tiles;
             }
         }
-        [Range(1, 40)]
-        public float width = 3;
-        [Range(1, 40)]
-        public float depth = 3;
 
-        public float X => transform.position.x;
-        public float Z => transform.position.z;
-        public Bounds Bounds => Mathf.Abs(transform.eulerAngles.y) % 180 > 0.1f ? RoomController.GetRect(X, Z, depth, width) : RoomController.GetRect(X, Z, width, depth);
-
-        [HideInInspector]
-        public List<Exit> exits = new();
-        
-        private void OnDrawGizmosSelected()
+        public Vector2Int[] RotatedOccupiedSpaces
         {
-            Gizmos.color = new Color(1f, 0f, 0f, 0.1f);
-            Gizmos.DrawCube(Bounds.center, Bounds.size);
+            get
+            {
+                var tiles = OccupiedCells;
+                for (int i = 0; i < OccupiedCells.Length; i++)
+                    tiles[i] = (tiles[i] - MinCorner).Rotate(rotation) + MinCorner;
+                return tiles;
+            }
+
         }
 
-        private void OnValidate()
-        {
-            exits = GetComponentsInChildren<Exit>().ToList();
-        }
+        public List<Doorway> doorways; //custom handle gizmos for doorways? topdown view with clickable tiles? 
+    }
+
+    [System.Serializable]
+    public struct Doorway{
+        public Vector2Int position;
+        public Vector2Int direction;
     }
 }

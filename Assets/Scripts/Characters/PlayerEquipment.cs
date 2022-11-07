@@ -18,7 +18,7 @@ public class PlayerEquipment : MonoBehaviour
 
     private void Update()
     {
-        gunPosition = Vector3.Lerp(gunPosition, gunAnchor.position, Time.deltaTime * smoothTime);
+        gunPosition = Vector3.Lerp(gunPosition, gunAnchor.position, .2f);
     }
 
     private void LateUpdate()

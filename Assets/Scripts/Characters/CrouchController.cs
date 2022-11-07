@@ -9,7 +9,7 @@ public class CrouchController : MonoBehaviour
     [SerializeField] private ConfigurableJoint spineJoint;
     [SerializeField] private Rigidbody bodyRB;
     [SerializeField] private Rigidbody headRB;
-    [SerializeField] private CapsuleCollider spineCollider;
+    [SerializeField] private CapsuleCollider headCollider;
     [SerializeField] private CapsuleCollider legsCollider;
 
     public float antiDecapitationLimit = .5f;
@@ -31,10 +31,10 @@ public class CrouchController : MonoBehaviour
     {
         var spineLen = crouching ? crouchLen : standingLen;
         headRB.transform.localPosition = Vector3.up * spineLen;
-        legsCollider.height = crouchLen + spineCollider.radius;
+        legsCollider.height = crouchLen + headCollider.radius;
         legsCollider.center = Vector3.up * legsCollider.height / 2f;
-        spineCollider.height = standingLen - crouchLen + spineCollider.radius * 2f;
-        spineCollider.center = spineCollider.center._x0z() - Vector3.up * (spineCollider.height / 2f - spineCollider.radius);
+        headCollider.height = standingLen - crouchLen + headCollider.radius * 2f;
+        headCollider.center = headCollider.center._x0z() - Vector3.up * (headCollider.height / 2f - headCollider.radius);
     }
 
     void OnEnable() => headRB.sleepThreshold = -1f;
@@ -43,10 +43,11 @@ public class CrouchController : MonoBehaviour
     void FixedUpdate()
     {
         headRB.transform.localPosition = headRB.transform.localPosition._0y0();
-        var spineLen = crouching ? crouchLen : standingLen;
+        var spineLen = crouching ? crouchLen : standingLen;        
         spineJoint.connectedAnchor = transform.TransformPoint(Vector3.up * spineLen);
+
         var isWorriedAboutDecapitation = headRB.transform.localPosition.y > spineLen + antiDecapitationLimit;        
-        spineCollider.enabled = !isWorriedAboutDecapitation;
+        headCollider.enabled = !isWorriedAboutDecapitation;
         if (bodyRB.velocity.y > 0) headRB.velocity = Vector3.up * bodyRB.velocity.y;
     }
 }
