@@ -17,31 +17,31 @@ namespace Rooms
         private void Awake()
         {
             var availableExits = new List<(Vector2Int worldPosition, Vector2Int direction)>();
-            var roomCount = 0;
             var exitPointer = 0;
             var lastExitPointer = 0; //prevent infinite loops
-            instances.Add(SpawnRoom(startRoom, 0, Vector2Int.zero, null, ref availableExits, ref exitPointer));
-            while (roomCount < this.roomCount && availableExits.Count > 0)
+            SpawnRoom(startRoom, 0, Vector2Int.zero, null, ref availableExits, ref exitPointer);
+            while (instances.Count < this.roomCount && availableExits.Count > 0)
             {
                 if (exitPointer > lastExitPointer + availableExits.Count * 2)
                     break;
                 exitPointer++;
                 var exit = availableExits[(exitPointer++) % availableExits.Count]; //round robbin randomness
                 var roomPoolPermutation = pool.RandomPermutation();
-                foreach (var room in roomPoolPermutation)
+                foreach (var roomTemplate in roomPoolPermutation)
                 {
                     var hasSpawned = false;
-                    var randomDoorwayPermutation = room.doorways.RandomPermutation();
+                    var randomDoorwayPermutation = roomTemplate.doorways.RandomPermutation();
                     foreach (var doorway in randomDoorwayPermutation)
                     {
                         var rotation = RotateMatchExits(exit.direction, -doorway.direction);
-                        var rotatedDoorwayPosition = (doorway.position - room.MinCorner).Rotate(rotation) + room.MinCorner;
-                        var delta = exit.worldPosition + exit.direction + (room.MinCorner - rotatedDoorwayPosition);
-                        var rotatedTiles = room.OccupiedCells.Select(vector => (vector - room.MinCorner).Rotate(rotation) + room.MinCorner + delta).ToArray();
-                        if (CheckHasSpace(rotatedTiles))
+                        var rotatedDoorwayPosition = (doorway.position - roomTemplate.MinCorner).Rotate(rotation) + roomTemplate.MinCorner;
+                        var newMinCornerWorldPosition = exit.worldPosition + exit.direction + (roomTemplate.MinCorner - rotatedDoorwayPosition);
+                        var requiredWorldPositions = roomTemplate.OccupiedCells.Select(vector => vector.Rotate(rotation) + newMinCornerWorldPosition).ToArray();
+                        if(requiredWorldPositions.Length < roomTemplate.GridRowCount * roomTemplate.GridColumnCount) Debug.LogError("wtf");
+                        if (CheckHasSpace(requiredWorldPositions))
                         {
-                            instances.Add(SpawnRoom(room, rotation, delta, doorway, ref availableExits, ref exitPointer));
-                            roomCount++;
+                            availableExits.RemoveAt(exitPointer % availableExits.Count);
+                            var roomInstance = SpawnRoom(roomTemplate, rotation, newMinCornerWorldPosition, doorway, ref availableExits, ref exitPointer);
                             lastExitPointer = exitPointer;
                             hasSpawned = true;
                             break;
@@ -49,13 +49,16 @@ namespace Rooms
                     }
                     if (hasSpawned) break;
                 }
+
             }
+            Debug.Log($"spawned {instances.Count} / {this.roomCount} rooms");
         }
 
         private Room SpawnRoom(Room room, int rotation, Vector2Int position, Doorway? usedDoorway, ref List<(Vector2Int worldPosition, Vector2Int direction)> availableExits, ref int exitPointer)
         {
             room = Instantiate<Room>(room);
-            room.rotation = rotation;
+            instances.Add(room);
+            room.Rotation = rotation;
             room.transform.position = ((Vector3)(Vector2)position)._x0y() * GRID_SIZE + (Vector3.one * GRID_SIZE / 2f)._x0z();
             room.transform.rotation = Quaternion.Euler(0, 90 * rotation, 0);
             foreach (var doorway in room.doorways)
@@ -78,12 +81,15 @@ namespace Rooms
             return r;
         }
 
-        public bool CheckHasSpace(IEnumerable<Vector2Int> positions)
+        public bool CheckHasSpace(IEnumerable<Vector2Int> worldSpacePositions)
         {
             foreach (var room in instances)
             {
-                if (room.RotatedOccupiedSpaces.Intersect(positions).Any())
-                    return false;
+                var worldSpaceOccupiedTiles = room.RotatedOccupiedSpaces.Select(position => position + room.MinCorner).ToArray();
+                foreach (var desiredTile in worldSpacePositions)
+                    foreach (var occupiedTile in worldSpaceOccupiedTiles)
+                        if (desiredTile == occupiedTile)
+                            return false;
             }
             return true;
         }

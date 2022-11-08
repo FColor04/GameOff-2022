@@ -175,9 +175,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71811616bce40ca45b0a19fd4cce2a23, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gridRowCount: 1
-  gridColumnCount: 1
-  rotation: 0
+  m_gridColumnCount: 1
+  m_gridRowCount: 1
   doorways:
   - position: {x: 0, y: 0}
     direction: {x: -1, y: 0}
