@@ -27,9 +27,13 @@ public class Gun : MonoBehaviour
     
     private PlayerCamera _playerCamera;
     private VelocityController _velocityController;
+    private AudioSource _audioSource;
+
+    public event Action OnGunShoot = () => {};
     
     private void Awake()
     {
+        _audioSource = GetComponent<AudioSource>();
         _velocityController = GetComponentInParent<VelocityController>();
         _playerCamera = GetComponentInParent<PlayerCamera>();
         _spread = spreadMinSize;
@@ -46,7 +50,7 @@ public class Gun : MonoBehaviour
             _fireTimer -= Time.deltaTime;
         else
         {
-            _spread += velocitySpreadMultiplier * _velocityController.CurrentVelocity.magnitude;
+            _spread += velocitySpreadMultiplier * Time.deltaTime * _velocityController.CurrentVelocity.magnitude;
             _spread = Mathf.Clamp(_spread, spreadMinSize, spreadMaxSize);
             
             if ((Mouse.current.leftButton.isPressed && automatic) ||
@@ -70,6 +74,8 @@ public class Gun : MonoBehaviour
                             healthComponent.OnHit(damage);
                     }
                 }
+                OnGunShoot?.Invoke();
+                _audioSource.Play();
                 _spread += spreadSizePerShot;
                 _spread = Mathf.Clamp(_spread, spreadMinSize, spreadMaxSize);
             }

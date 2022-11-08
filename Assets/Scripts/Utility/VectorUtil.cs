@@ -87,4 +87,9 @@ public static class VectorUtil
         }
         return clampedPath.ToArray();
     }
+    
+    public static Vector2 RotateAround(this Vector2 vector, Vector2 origin, float angle)
+    {
+        return vector;
+    }
 }

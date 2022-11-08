@@ -6,19 +6,32 @@ using UnityEngine;
 public class PlayerEquipment : MonoBehaviour
 {
     public Transform gunAnchor;
-    public Gun equippedGun;
+    private Gun _equippedGun;
+    public Gun equippedGun
+    {
+        get => _equippedGun;
+        set
+        {
+            if(_equippedGun != null)
+                _equippedGun.OnGunShoot -= OnPlayerShoot;
+            _equippedGun = value;
+            _equippedGun.OnGunShoot += OnPlayerShoot;
+        }
+    }
     public float smoothTime;
-
+    public Crosshair crosshair;
+    
     private Vector3 gunPosition;
     
     private void Awake()
     {
         gunPosition = gunAnchor.position;
+        equippedGun = GetComponentInChildren<Gun>();
     }
 
     private void Update()
     {
-        gunPosition = Vector3.Lerp(gunPosition, gunAnchor.position, .2f);
+        gunPosition = Vector3.Lerp(gunPosition, gunAnchor.position, smoothTime * Time.deltaTime);
     }
 
     private void LateUpdate()
@@ -27,5 +40,11 @@ public class PlayerEquipment : MonoBehaviour
         {
             equippedGun.transform.position = gunPosition;
         }
+    }
+
+    public void OnPlayerShoot()
+    {
+        crosshair.outsideBehaviourAmount += 1;
+        crosshair.outsideBehaviourAmount = Mathf.Clamp01(crosshair.outsideBehaviourAmount);
     }
 }
