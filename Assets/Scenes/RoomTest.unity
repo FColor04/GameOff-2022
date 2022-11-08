@@ -581,8 +581,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startRoom: {fileID: 7468931856018159309, guid: f34fa76ad0449604485531b823e15817, type: 3}
   pool:
-  - {fileID: 7468931856018159309, guid: 102ac3c9cd3cd484fba7c15f94db6822, type: 3}
+  - {fileID: 7468931856018159309, guid: e8d41b3d2480e184b95c5c7038aed11e, type: 3}
   - {fileID: 7468931856018159309, guid: 26b97e658caceb941af5b29ff235c086, type: 3}
+  - {fileID: 7468931856018159309, guid: 102ac3c9cd3cd484fba7c15f94db6822, type: 3}
   instances: []
   roomCount: 100
 --- !u!4 &1681931456
