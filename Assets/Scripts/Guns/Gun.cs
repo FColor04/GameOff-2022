@@ -1,15 +1,19 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Guns;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Random = UnityEngine.Random;
 
 public class Gun : MonoBehaviour
-{
+{ 
+    [HideInInspector]
+    public bool equipped;
     [Header("Gun References")]
     public Transform muzzle;
     public GameObject hole;
+    public CrosshairData crosshairOverride;
     //FX
     [Header("Properties")] 
     public float maxRange = 100f;
@@ -28,19 +32,42 @@ public class Gun : MonoBehaviour
     private PlayerCamera _playerCamera;
     private VelocityController _velocityController;
     private AudioSource _audioSource;
-
+    private Collider _collider;
+    private Rigidbody _rigidbody;
+    
     public event Action OnGunShoot = () => {};
     
     private void Awake()
     {
         _audioSource = GetComponent<AudioSource>();
+        _collider = GetComponent<Collider>();
+        _rigidbody = GetComponent<Rigidbody>();
+        equipped = false;
+    }
+
+    public void OnPickup()
+    {
+        _collider.enabled = false;
+        _rigidbody.isKinematic = true;
         _velocityController = GetComponentInParent<VelocityController>();
         _playerCamera = GetComponentInParent<PlayerCamera>();
         _spread = spreadMinSize;
+        equipped = true;
+        transform.localRotation = Quaternion.identity;
+    }
+
+    public void OnDrop(Vector3 force)
+    {
+        _collider.enabled = true;
+        _rigidbody.isKinematic = false;
+        _rigidbody.velocity = force;
+        equipped = false;
     }
 
     private void Update()
     {
+        if (!equipped) return;
+        
         if (_spread > spreadMinSize)
         {
             _spread -= Time.deltaTime * spreadDecay;

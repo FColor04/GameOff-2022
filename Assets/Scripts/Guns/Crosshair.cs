@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Guns;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -29,79 +30,48 @@ public class Crosshair : Graphic
         Breathe,
         Spin
     }
-    
-    [Header("Inside")]
-    public InsideShape insideShape;
-    [Range(3, 30)]
-    public int insideNgon = 3;
-    public Color insideColor = Color.white;
-    private float _insideOffset;
-    public float insideOffset;
-    public float insideThickness;
-    private float _insideRotation;
-    public float insideRotation;
-    
-    [Header("Outside")]
-    public OutsideShape outsideShape;
-    [Range(3, 30)] 
-    public int outsideNgon = 3;
-    public Color outsideColor = Color.white;
-    private float _outsideOffset;
-    public float outsideOffset;
-    private float _outsideRotation;
-    public float outsideRotation;
-    public float outsideThickness;
-    public float outsideLength;
 
-    public CrosshairBehaviour insideBehaviour;
-    public CrosshairBehaviour outsideBehaviour;
-    public float outsideBehaviourAmount;
-    public float outsideBehaviourDecay;
+    public CrosshairData currentCrosshair;
+    public CrosshairData fallbackCrosshair;
+    public CrosshairData CurrentCrosshair => currentCrosshair != null ? currentCrosshair : fallbackCrosshair;
+    
     private RectTransform _rectTransform;
     private float _timer;
-
-    protected override void Awake()
-    {
-        _insideOffset = insideOffset;
-        _insideRotation = insideRotation;
-        
-        _outsideOffset = outsideOffset;
-        _outsideRotation = outsideRotation;
-    }
 
     protected override void OnPopulateMesh(VertexHelper vh)
     {
         if (_rectTransform == null)
             _rectTransform = GetComponent<RectTransform>();
 
+        
         if (!Application.isPlaying)
         {
             Awake();
         }
 
         var rect = _rectTransform.rect;
-        float halfInsideThickness = insideThickness / 2f;
-        float halfOutsideThickness = outsideThickness / 2f;
+        float halfInsideThickness = CurrentCrosshair.insideThickness / 2f;
+        float halfOutsideThickness = CurrentCrosshair.outsideThickness / 2f;
         
         vh.Clear();
         int vertexCounter = 0;
         UIVertex v = UIVertex.simpleVert;
-        v.color = insideColor;
+        v.color = CurrentCrosshair.insideColor;
         
-        switch (insideShape)
+        switch (CurrentCrosshair.insideShape)
         {
             case InsideShape.Dot:
                 v.position = rect.center + new Vector2(halfInsideThickness, halfInsideThickness);
-                v.position = Quaternion.Euler(0, 0, _insideRotation) * v.position;
+                v.position = Quaternion.Euler(0, 0, CurrentCrosshair.runtimeInsideRotation) * v.position;
                 vh.AddVert(v);
                 v.position = rect.center + new Vector2(halfInsideThickness, -halfInsideThickness);
-                v.position = Quaternion.Euler(0, 0, _insideRotation) * v.position;
+                v.position = Quaternion.Euler(0, 0, CurrentCrosshair.runtimeInsideRotation) * v.position;
                 vh.AddVert(v);
                 v.position = rect.center + new Vector2(-halfInsideThickness, -halfInsideThickness);
-                v.position = Quaternion.Euler(0, 0, _insideRotation) * v.position;
+                v.position = Quaternion.Euler(0, 0, CurrentCrosshair.runtimeInsideRotation) * v.position;
                 vh.AddVert(v);
                 v.position = rect.center + new Vector2(-halfInsideThickness, halfInsideThickness);
-                v.position = Quaternion.Euler(0, 0, _insideRotation) * v.position;
+                v.position = Quaternion.Euler(0, 0, CurrentCrosshair.runtimeInsideRotation) * v.position;
                 vh.AddVert(v);
                 vh.AddTriangle(vertexCounter, vertexCounter + 2, vertexCounter + 1);
                 vh.AddTriangle(vertexCounter + 2, vertexCounter, vertexCounter + 3);
@@ -109,49 +79,49 @@ public class Crosshair : Graphic
                 break;
             case InsideShape.Cross:
                 //Top part
-                v.position = rect.center + new Vector2(halfInsideThickness, halfInsideThickness + _insideOffset);
-                v.position = Quaternion.Euler(0, 0, _insideRotation) * v.position;
+                v.position = rect.center + new Vector2(halfInsideThickness, halfInsideThickness + CurrentCrosshair.runtimeInsideOffset);
+                v.position = Quaternion.Euler(0, 0, CurrentCrosshair.runtimeInsideRotation) * v.position;
                 vh.AddVert(v);
                 v.position = rect.center + new Vector2(halfInsideThickness, halfInsideThickness);
-                v.position = Quaternion.Euler(0, 0, _insideRotation) * v.position;
+                v.position = Quaternion.Euler(0, 0, CurrentCrosshair.runtimeInsideRotation) * v.position;
                 vh.AddVert(v);
                 v.position = rect.center + new Vector2(-halfInsideThickness, halfInsideThickness);
-                v.position = Quaternion.Euler(0, 0, _insideRotation) * v.position;
+                v.position = Quaternion.Euler(0, 0, CurrentCrosshair.runtimeInsideRotation) * v.position;
                 vh.AddVert(v);
-                v.position = rect.center + new Vector2(-halfInsideThickness, halfInsideThickness + _insideOffset);
-                v.position = Quaternion.Euler(0, 0, _insideRotation) * v.position;
+                v.position = rect.center + new Vector2(-halfInsideThickness, halfInsideThickness + CurrentCrosshair.runtimeInsideOffset);
+                v.position = Quaternion.Euler(0, 0, CurrentCrosshair.runtimeInsideRotation) * v.position;
                 vh.AddVert(v);
                 vh.AddTriangle(vertexCounter, vertexCounter + 2, vertexCounter + 1);
                 vh.AddTriangle(vertexCounter + 2, vertexCounter, vertexCounter + 3);
                 vertexCounter += 4;
                 //Bottom part
-                v.position = rect.center + new Vector2(halfInsideThickness, -halfInsideThickness - _insideOffset);
-                v.position = Quaternion.Euler(0, 0, _insideRotation) * v.position;
+                v.position = rect.center + new Vector2(halfInsideThickness, -halfInsideThickness - CurrentCrosshair.runtimeInsideOffset);
+                v.position = Quaternion.Euler(0, 0, CurrentCrosshair.runtimeInsideRotation) * v.position;
                 vh.AddVert(v);
                 v.position = rect.center + new Vector2(halfInsideThickness, -halfInsideThickness);
-                v.position = Quaternion.Euler(0, 0, _insideRotation) * v.position;
+                v.position = Quaternion.Euler(0, 0, CurrentCrosshair.runtimeInsideRotation) * v.position;
                 vh.AddVert(v);
                 v.position = rect.center + new Vector2(-halfInsideThickness, -halfInsideThickness);
-                v.position = Quaternion.Euler(0, 0, _insideRotation) * v.position;
+                v.position = Quaternion.Euler(0, 0, CurrentCrosshair.runtimeInsideRotation) * v.position;
                 vh.AddVert(v);
-                v.position = rect.center + new Vector2(-halfInsideThickness, -halfInsideThickness - _insideOffset);
-                v.position = Quaternion.Euler(0, 0, _insideRotation) * v.position;
+                v.position = rect.center + new Vector2(-halfInsideThickness, -halfInsideThickness - CurrentCrosshair.runtimeInsideOffset);
+                v.position = Quaternion.Euler(0, 0, CurrentCrosshair.runtimeInsideRotation) * v.position;
                 vh.AddVert(v);
                 vh.AddTriangle(vertexCounter, vertexCounter + 2, vertexCounter + 1);
                 vh.AddTriangle(vertexCounter + 2, vertexCounter, vertexCounter + 3);
                 vertexCounter += 4;
                 //Center part
-                v.position = rect.center + new Vector2(halfInsideThickness + _insideOffset, halfInsideThickness);
-                v.position = Quaternion.Euler(0, 0, _insideRotation) * v.position;
+                v.position = rect.center + new Vector2(halfInsideThickness + CurrentCrosshair.runtimeInsideOffset, halfInsideThickness);
+                v.position = Quaternion.Euler(0, 0, CurrentCrosshair.runtimeInsideRotation) * v.position;
                 vh.AddVert(v);
-                v.position = rect.center + new Vector2(halfInsideThickness + _insideOffset, -halfInsideThickness);
-                v.position = Quaternion.Euler(0, 0, _insideRotation) * v.position;
+                v.position = rect.center + new Vector2(halfInsideThickness + CurrentCrosshair.runtimeInsideOffset, -halfInsideThickness);
+                v.position = Quaternion.Euler(0, 0, CurrentCrosshair.runtimeInsideRotation) * v.position;
                 vh.AddVert(v);
-                v.position = rect.center + new Vector2(-halfInsideThickness - _insideOffset, -halfInsideThickness);
-                v.position = Quaternion.Euler(0, 0, _insideRotation) * v.position;
+                v.position = rect.center + new Vector2(-halfInsideThickness - CurrentCrosshair.runtimeInsideOffset, -halfInsideThickness);
+                v.position = Quaternion.Euler(0, 0, CurrentCrosshair.runtimeInsideRotation) * v.position;
                 vh.AddVert(v);
-                v.position = rect.center + new Vector2(-halfInsideThickness - _insideOffset, halfInsideThickness);
-                v.position = Quaternion.Euler(0, 0, _insideRotation) * v.position;
+                v.position = rect.center + new Vector2(-halfInsideThickness - CurrentCrosshair.runtimeInsideOffset, halfInsideThickness);
+                v.position = Quaternion.Euler(0, 0, CurrentCrosshair.runtimeInsideRotation) * v.position;
                 vh.AddVert(v);
                 vh.AddTriangle(vertexCounter, vertexCounter + 2, vertexCounter + 1);
                 vh.AddTriangle(vertexCounter + 2, vertexCounter, vertexCounter + 3);
@@ -159,15 +129,15 @@ public class Crosshair : Graphic
                 break;
             case InsideShape.NGon:
                 //Inside verts
-                for (int i = 0; i < insideNgon; i++)
+                for (int i = 0; i < CurrentCrosshair.insideNgon; i++)
                 {
-                    float progress = ((float) i / insideNgon) * 2f * Mathf.PI;
+                    float progress = ((float) i / CurrentCrosshair.insideNgon) * 2f * Mathf.PI;
                     Vector2 insideNPointOffset = new Vector2(Mathf.Sin(progress), Mathf.Cos(progress));
-                    v.position = rect.center + insideNPointOffset * _insideOffset;
-                    v.position = Quaternion.Euler(0, 0, _insideRotation) * v.position;
+                    v.position = rect.center + insideNPointOffset * CurrentCrosshair.runtimeInsideOffset;
+                    v.position = Quaternion.Euler(0, 0, CurrentCrosshair.runtimeInsideRotation) * v.position;
                     vh.AddVert(v);
-                    v.position = rect.center + insideNPointOffset * (_insideOffset + insideThickness);
-                    v.position = Quaternion.Euler(0, 0, _insideRotation) * v.position;
+                    v.position = rect.center + insideNPointOffset * (CurrentCrosshair.runtimeInsideOffset + CurrentCrosshair.insideThickness);
+                    v.position = Quaternion.Euler(0, 0, CurrentCrosshair.runtimeInsideRotation) * v.position;
                     vh.AddVert(v);
                     if (i != 0)
                     {
@@ -176,8 +146,8 @@ public class Crosshair : Graphic
                     }
                     else
                     {
-                        vh.AddTriangle(vertexCounter + 1, vertexCounter + ((insideNgon - 1) * 2), vertexCounter + ((insideNgon - 1) * 2) + 1);
-                        vh.AddTriangle(vertexCounter, vertexCounter + ((insideNgon - 1) * 2), vertexCounter + 1);
+                        vh.AddTriangle(vertexCounter + 1, vertexCounter + ((CurrentCrosshair.insideNgon - 1) * 2), vertexCounter + ((CurrentCrosshair.insideNgon - 1) * 2) + 1);
+                        vh.AddTriangle(vertexCounter, vertexCounter + ((CurrentCrosshair.insideNgon - 1) * 2), vertexCounter + 1);
                     }
                     vertexCounter += 2;
                 }
@@ -186,81 +156,81 @@ public class Crosshair : Graphic
                 break;
         }
 
-        v.color = outsideColor;
-        switch (outsideShape)
+        v.color = CurrentCrosshair.outsideColor;
+        switch (CurrentCrosshair.outsideShape)
         {
             case OutsideShape.Lines:
-                for (int i = 0; i < outsideNgon; i++)
+                for (int i = 0; i < CurrentCrosshair.outsideNgon; i++)
                 {
-                    v.position = rect.center + new Vector2(halfOutsideThickness, halfOutsideThickness + _outsideOffset + outsideLength);
-                    v.position = Quaternion.Euler(0, 0, _outsideRotation) * v.position;
+                    v.position = rect.center + new Vector2(halfOutsideThickness, halfOutsideThickness + CurrentCrosshair.runtimeOutsideOffset + CurrentCrosshair.outsideLength);
+                    v.position = Quaternion.Euler(0, 0, CurrentCrosshair.runtimeOutsideRotation) * v.position;
                     vh.AddVert(v);
-                    v.position = rect.center + new Vector2(halfOutsideThickness, halfOutsideThickness + _outsideOffset);
-                    v.position = Quaternion.Euler(0, 0, _outsideRotation) * v.position;
+                    v.position = rect.center + new Vector2(halfOutsideThickness, halfOutsideThickness + CurrentCrosshair.runtimeOutsideOffset);
+                    v.position = Quaternion.Euler(0, 0, CurrentCrosshair.runtimeOutsideRotation) * v.position;
                     vh.AddVert(v);
-                    v.position = rect.center + new Vector2(-halfOutsideThickness, halfOutsideThickness + _outsideOffset);
-                    v.position = Quaternion.Euler(0, 0, _outsideRotation) * v.position;
+                    v.position = rect.center + new Vector2(-halfOutsideThickness, halfOutsideThickness + CurrentCrosshair.runtimeOutsideOffset);
+                    v.position = Quaternion.Euler(0, 0, CurrentCrosshair.runtimeOutsideRotation) * v.position;
                     vh.AddVert(v);
-                    v.position = rect.center + new Vector2(-halfOutsideThickness, halfOutsideThickness + _outsideOffset + outsideLength);
-                    v.position = Quaternion.Euler(0, 0, _outsideRotation) * v.position;
+                    v.position = rect.center + new Vector2(-halfOutsideThickness, halfOutsideThickness + CurrentCrosshair.runtimeOutsideOffset + CurrentCrosshair.outsideLength);
+                    v.position = Quaternion.Euler(0, 0, CurrentCrosshair.runtimeOutsideRotation) * v.position;
                     vh.AddVert(v);
                     vh.AddTriangle(vertexCounter, vertexCounter + 2, vertexCounter + 1);
                     vh.AddTriangle(vertexCounter + 2, vertexCounter, vertexCounter + 3);
                     vertexCounter += 4;
-                    _outsideRotation += 360f / outsideNgon;
+                    CurrentCrosshair.runtimeOutsideRotation += 360f / CurrentCrosshair.outsideNgon;
                 }
-                _outsideRotation -= 360;
+                CurrentCrosshair.runtimeOutsideRotation -= 360;
                 break;
         }
     }
 
     private void Update()
     {
-        switch (outsideBehaviour)
+        switch (CurrentCrosshair.outsideBehaviour)
         {
             case CrosshairBehaviour.Breathe:
-                _outsideOffset = (-Mathf.Cos(_timer) + 2) * outsideOffset;
+                CurrentCrosshair.runtimeOutsideOffset = (-Mathf.Cos(_timer) + 2) * CurrentCrosshair.outsideBehaviourStrength;
                 SetVerticesDirty();
                 break;
             case CrosshairBehaviour.Offset:
-                _outsideOffset = (outsideBehaviourAmount + 1) * outsideOffset;
+                CurrentCrosshair.runtimeOutsideOffset = CurrentCrosshair.runtimeOutsideBehaviourAmount * CurrentCrosshair.outsideBehaviourStrength;
                 SetVerticesDirty();
                 break;
             case CrosshairBehaviour.InverseOffset:
-                _outsideOffset = (1 - outsideBehaviourAmount) * outsideOffset;
+                CurrentCrosshair.runtimeOutsideOffset = (1 - CurrentCrosshair.runtimeOutsideBehaviourAmount) * CurrentCrosshair.outsideBehaviourStrength;
                 SetVerticesDirty();
                 break;
             case CrosshairBehaviour.Spin:
-                _outsideRotation += Time.deltaTime * 360f * outsideBehaviourAmount;
+                CurrentCrosshair.runtimeOutsideRotation += Time.deltaTime * 360f * CurrentCrosshair.runtimeOutsideBehaviourAmount * CurrentCrosshair.outsideBehaviourStrength;
                 SetVerticesDirty();
                 break;
         }
         
-        switch (insideBehaviour)
+        switch (CurrentCrosshair.insideBehaviour)
         {
             case CrosshairBehaviour.Breathe:
-                _insideOffset = (-Mathf.Cos(_timer) + 2) * outsideOffset;
+                CurrentCrosshair.runtimeInsideOffset = (-Mathf.Cos(_timer) + 2) * CurrentCrosshair.outsideBehaviourStrength;
                 SetVerticesDirty();
                 break;
             case CrosshairBehaviour.Offset:
-                _insideOffset = (outsideBehaviourAmount + 1) * outsideOffset;
+                CurrentCrosshair.runtimeInsideOffset = CurrentCrosshair.runtimeOutsideBehaviourAmount * CurrentCrosshair.outsideBehaviourStrength;
                 SetVerticesDirty();
                 break;
             case CrosshairBehaviour.InverseOffset:
-                _insideOffset = (1 - outsideBehaviourAmount) * outsideOffset;
+                CurrentCrosshair.runtimeInsideOffset = (1 - CurrentCrosshair.runtimeOutsideBehaviourAmount) * CurrentCrosshair.outsideBehaviourStrength;
                 SetVerticesDirty();
                 break;
             case CrosshairBehaviour.Spin:
-                _insideRotation += Time.deltaTime * 360f * outsideBehaviourAmount;
+                CurrentCrosshair.runtimeInsideRotation += Time.deltaTime * 360f * CurrentCrosshair.runtimeOutsideBehaviourAmount * CurrentCrosshair.outsideBehaviourStrength;
                 SetVerticesDirty();
                 break;
         }
         
 
-        _timer += Time.deltaTime * outsideBehaviourAmount;
-        if (outsideBehaviourDecay > 0 && outsideBehaviourAmount != 0)
+        _timer += Time.deltaTime * CurrentCrosshair.runtimeOutsideBehaviourAmount;
+        if (CurrentCrosshair.outsideBehaviourDecay > 0 && CurrentCrosshair.runtimeOutsideBehaviourAmount != 0)
         {
-            outsideBehaviourAmount = Mathf.Lerp(outsideBehaviourAmount, 0, (1f / outsideBehaviourDecay) * Time.deltaTime);
+            CurrentCrosshair.runtimeOutsideBehaviourAmount = Mathf.Lerp(CurrentCrosshair.runtimeOutsideBehaviourAmount, 0, (1f / CurrentCrosshair.outsideBehaviourDecay) * Time.deltaTime);
         }
     }
 }

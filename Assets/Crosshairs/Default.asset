@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86303f1e3ea9452aa4fe54f7ec6d1420, type: 3}
+  m_Name: Default
+  m_EditorClassIdentifier: 
+  insideShape: 1
+  insideNgon: 3
+  insideColor: {r: 1, g: 1, b: 1, a: 1}
+  runtimeInsideOffset: 0
+  insideOffset: 0
+  insideThickness: 2
+  runtimeInsideRotation: 0
+  insideRotation: 0
+  outsideShape: 1
+  outsideNgon: 4
+  outsideColor: {r: 1, g: 1, b: 1, a: 0.07058824}
+  runtimeOutsideOffset: 0
+  outsideOffset: 0
+  runtimeOutsideRotation: 0
+  outsideRotation: 0
+  outsideThickness: 2
+  outsideLength: 12
+  insideBehaviour: 0
+  outsideBehaviour: 1
+  outsideBehaviourAmount: 0
+  outsideBehaviourStrength: 48
+  runtimeOutsideBehaviourAmount: 0
+  outsideBehaviourDecay: 0.2

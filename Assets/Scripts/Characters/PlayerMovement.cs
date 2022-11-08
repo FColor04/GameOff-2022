@@ -10,12 +10,16 @@ public class PlayerMovement : MonoBehaviour
 
     private MovementController cached_movementController;
     private MovementController MovementController { get => cached_movementController ??= GetComponent<MovementController>(); }
-
+    
+    private PlayerEquipment cached_playerEquipment;
+    private PlayerEquipment PlayerEquipment { get => cached_playerEquipment ??= GetComponent<PlayerEquipment>(); }
+    
     public Vector2 MovementInput { get; set; }
-    [field: SerializeField] public float Speed { get; set; } = 6f;
+    [field: SerializeField] public float Speed { get; set; } = 7f;
+    [field: SerializeField] public float DownsightsSpeed { get; set; } = 5f;
 
     void FixedUpdate()
     {
-        MovementController.XZPlaneMovement = Quaternion.Euler(0, 0, -PlayerCamera.RY) * MovementInput * Speed;
+        MovementController.XZPlaneMovement = Quaternion.Euler(0, 0, -PlayerCamera.RY) * MovementInput * (PlayerEquipment.aimingDownsights ? DownsightsSpeed : Speed);
     }
 }
