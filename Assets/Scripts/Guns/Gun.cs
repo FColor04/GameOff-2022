@@ -126,6 +126,7 @@ public class Gun : MonoBehaviour
                 }
                 else
                 {
+                    _fireTimer = 1f / fireRate;
                     _audioSource.clip = emptySfx;
                     _audioSource.Play();
                 }
