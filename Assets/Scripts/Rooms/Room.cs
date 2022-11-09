@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Rooms
 {
@@ -81,7 +82,16 @@ namespace Rooms
 
         }
 
-        public List<Doorway> doorways; //custom handle gizmos for doorways? topdown view with clickable tiles? 
+        public List<Doorway> doorways = new (); 
+        
+        //custom handle gizmos for doorways? topdown view with clickable tiles? 
+
+        public void OnDrawGizmos()
+        {
+            if(gameObject.scene.buildIndex == -1)
+                OnDrawGizmosSelected();
+        }
+
         public void OnDrawGizmosSelected()
         {
             Gizmos.color = Color.white;

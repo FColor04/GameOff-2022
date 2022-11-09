@@ -9,6 +9,7 @@ public class PlayerEquipment : MonoBehaviour
 {
     public Transform gunAnchor;
     public Transform gunAnchorDownsights;
+    public TMP_Text ammoDisplay;
     private Gun _equippedGun;
     public Gun equippedGun
     {
@@ -49,11 +50,16 @@ public class PlayerEquipment : MonoBehaviour
         playerCamera = GetComponent<PlayerCamera>();
     }
 
+    public void UpdateAmmo(string text)
+    {
+        ammoDisplay.text = text;
+    }
+
     private void Update()
     {
         aimingDownsights = Mouse.current.rightButton.isPressed;
         gunPosition = Vector3.Lerp(gunPosition, aimingDownsights ? gunAnchorDownsights.localPosition : gunAnchor.localPosition, smoothTime * Time.deltaTime);
-
+        
         if (Keyboard.current.gKey.wasPressedThisFrame && equippedGun != null)
         {
             equippedGun = null;
