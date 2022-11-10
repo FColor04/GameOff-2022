@@ -1,11 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Guns;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Crosshair : Graphic
+public class CrosshairRenderer : Graphic
 {
     public enum InsideShape
     {
@@ -30,6 +29,8 @@ public class Crosshair : Graphic
         Breathe,
         Spin
     }
+
+    public static CrosshairRenderer Instance;
 
     public CrosshairData currentCrosshair;
     public CrosshairData fallbackCrosshair;

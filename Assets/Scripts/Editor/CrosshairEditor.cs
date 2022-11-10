@@ -1,7 +1,7 @@
 ﻿
 using UnityEditor;
 
-[CustomEditor(typeof(Crosshair))]
+[CustomEditor(typeof(CrosshairRenderer))]
     public class CrosshairEditor : Editor
     {
         public override void OnInspectorGUI()
