@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Guns;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -16,6 +17,8 @@ public class Gun : MonoBehaviour
     public CrosshairData crosshairOverride;
     public AudioClip emptySfx;
     private AudioClip _shootSfx;
+
+    public ParticleSystem muzzleFlash;
     //FX
     [Header("Properties")] 
     public float maxRange = 100f;
@@ -25,6 +28,10 @@ public class Gun : MonoBehaviour
     private float _fireTimer;
     public int ammoCount = 12;
     public int maxAmmo = 12;
+    public float weaponRecoil = 0.2f;
+    public float weaponRecoilStrength = 0.2f;
+    private float _recoil;
+    
     [Header("Spread")]
     public float spreadSizePerShot = 0.2f;
     public float velocitySpreadMultiplier = 1f;
@@ -39,6 +46,9 @@ public class Gun : MonoBehaviour
     private Collider _collider;
     private Rigidbody _rigidbody;
     private PlayerEquipment _playerEquipment;
+    private List<MeshRenderer> _models = new ();
+    private List<Vector3> _modelOrigins = new ();
+    
     public event Action OnGunShoot = () => {};
     
     private void Awake()
@@ -47,6 +57,8 @@ public class Gun : MonoBehaviour
         _shootSfx = _audioSource.clip;
         _collider = GetComponent<Collider>();
         _rigidbody = GetComponent<Rigidbody>();
+        _models = GetComponentsInChildren<MeshRenderer>().ToList();
+        _modelOrigins = _models.Select(model => model.transform.localPosition).ToList();
         equipped = false;
     }
 
@@ -83,6 +95,17 @@ public class Gun : MonoBehaviour
             _spread -= Time.deltaTime * spreadDecay;
         }
 
+        if (_recoil > 0)
+        {
+            _recoil -= Time.deltaTime;
+        }
+
+        for (int i = 0; i < _models.Count; i++)
+        {
+            if (i >= _modelOrigins.Count) break;
+            _models[i].transform.localPosition = _modelOrigins[i] - Vector3.forward * (weaponRecoilStrength * (_recoil / weaponRecoil));
+        }
+
         if (_fireTimer > 0)
             _fireTimer -= Time.deltaTime;
         else
@@ -99,6 +122,11 @@ public class Gun : MonoBehaviour
                     //Shoot
                     _fireTimer = 1f / fireRate;
                     ammoCount--;
+
+                    _recoil = weaponRecoil;
+                    
+                    if(muzzleFlash != null)
+                        muzzleFlash.Emit(1);
                     if (_playerEquipment != null)
                         _playerEquipment.UpdateAmmo($"{ammoCount}/{maxAmmo}");
                     Vector3 direction = _playerCamera.Camera.forward;

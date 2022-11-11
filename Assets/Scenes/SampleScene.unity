@@ -277,6 +277,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Machine Gun
       objectReference: {fileID: 0}
+    - target: {fileID: 4954438243759017574, guid: c0e76ab02400f3b44ad4ab5e08b62b4f, type: 3}
+      propertyPath: weaponRecoil
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4954438243759017575, guid: c0e76ab02400f3b44ad4ab5e08b62b4f, type: 3}
+      propertyPath: m_audioClip
+      value: 
+      objectReference: {fileID: 8300000, guid: c7f0f16412d472e42ae0f4c7d6041245, type: 3}
     - target: {fileID: 4954438243759017577, guid: c0e76ab02400f3b44ad4ab5e08b62b4f, type: 3}
       propertyPath: m_RootOrder
       value: 1
