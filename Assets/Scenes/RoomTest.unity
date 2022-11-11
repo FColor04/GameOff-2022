@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 324.1875, g: 194.95805, b: 163.88284, a: 1}
+  m_IndirectSpecularColor: {r: 373.5298, g: 224.37968, b: 188.45926, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -181,7 +181,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1681931456}
   - component: {fileID: 1681931455}
-  - component: {fileID: 1681931457}
   m_Layer: 0
   m_Name: Room Controller
   m_TagString: Untagged
@@ -223,16 +222,3 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1681931457
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1681931454}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4d0902b6dc17eb8498d3b083c4657492, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sceneName: PlayerScene
