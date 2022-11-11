@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "ca.andydbc.unity-texture-packer": "file:../unity-texture-packer-0.1.0",
     "com.unity.2d.sprite": "1.0.0",
     "com.unity.animation.rigging": "1.1.1",
     "com.unity.ide.rider": "3.0.16",
