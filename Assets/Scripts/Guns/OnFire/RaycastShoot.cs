@@ -1,12 +1,19 @@
+using System.Collections;
 using UnityEngine;
 
 public class RaycastShoot : IAction
 {
-    GameObject trail;
-    GameObject impact;
+    public GameObject bulletTrail;
+    public GameObject bulletImpact;
+    public GameObject onHitVFX;
 
-    public void Execute(GunData gunData, Vector3 direction, Vector3 position)
+    public float spread;
+    public float maxRange = 100f;
+    public float damage = 2f;
+
+
+    public IEnumerator Execute(GunData gunData, Vector3 direction, Vector3 position)
     {
-        throw new System.NotImplementedException();
+        yield return null;
     }
 }

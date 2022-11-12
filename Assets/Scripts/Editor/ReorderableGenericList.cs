@@ -7,10 +7,16 @@ using System;
 
 public class ReorderableGenericList<T>
 {
-    private ReorderableList list;
+    private ReorderableList list;    
     public Action<Rect, int, bool, bool> DrawElementCallback;
     public Func<int, float> GetElementHeightCallback;
-    public string headerOverride;
+    public string headerOverride;    
+    public List<T> Elements
+    {
+        get => (List<T>)list.list;
+        set => list.list = value;
+    }
+
     public List<(string name, Type type)> addDropdownOptions
     {
         set
@@ -33,7 +39,7 @@ public class ReorderableGenericList<T>
     public ReorderableGenericList() : this(new List<T>()) { }
     public ReorderableGenericList(IList<T> elements)
     {
-        list = new ReorderableList((IList)elements, typeof(T));
+        list = new ReorderableList((IList)elements, typeof(T));        
         list.drawElementCallback = (rect, index, isActive, isFocused) => DrawElementCallback?.Invoke(rect, index, isActive, isFocused);
         list.elementHeightCallback = (index) => GetElementHeightCallback?.Invoke(index) ?? 0f;
         list.drawHeaderCallback = DrawHeader;
