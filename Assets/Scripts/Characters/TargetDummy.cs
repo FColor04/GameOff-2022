@@ -2,7 +2,7 @@
 
 namespace Characters
 {
-    public class TargetDummy : MonoBehaviour, IHasHealth
+    public class TargetDummy : MonoBehaviour, IDamageEventReciever
     {
         [SerializeField]
         private Health health = new Health(100);
