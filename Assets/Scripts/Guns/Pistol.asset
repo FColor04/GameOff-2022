@@ -13,12 +13,49 @@ MonoBehaviour:
   m_Name: Pistol
   m_EditorClassIdentifier: 
   crosshairOverride: {fileID: 0}
-  maxRange: 100
-  damage: 2
+  fireRate: 15
   isAutomatic: 0
-  fireRate: 17
-  spreadSizePerShot: 0.2
-  velocitySpreadMultiplier: 1
-  spreadDecay: 0.2
-  spreadMinSize: 0.1
-  spreadMaxSize: 1.2
+  onPrimaryFireActions:
+  - rid: 2901371761284612113
+  - rid: 2901371761284612115
+  - rid: 2901371761284612114
+  onSecondaryFireActions: []
+  references:
+    version: 2
+    RefIds:
+    - rid: 2901371761284612113
+      type: {class: RaycastShoot, ns: , asm: Assembly-CSharp}
+      data:
+        bulletTrail: {fileID: 0}
+        bulletImpact: {fileID: 0}
+        onHitVFX: {fileID: 0}
+        spread: 0
+        maxRange: 100
+        damage: 2
+    - rid: 2901371761284612114
+      type: {class: SpawnProjectile, ns: , asm: Assembly-CSharp}
+      data:
+        prefab: {fileID: 0}
+        spread: 0
+        lifetime: 100
+        launchSpeed: 20
+        damage: 2
+    - rid: 2901371761284612115
+      type: {class: Repeat, ns: , asm: Assembly-CSharp}
+      data:
+        repetitions: 0
+        actions:
+        - rid: 2901371761284612122
+        - rid: 2901371761284612121
+    - rid: 2901371761284612121
+      type: {class: Wait, ns: , asm: Assembly-CSharp}
+      data:
+        duration: 0.1
+    - rid: 2901371761284612122
+      type: {class: SpawnProjectile, ns: , asm: Assembly-CSharp}
+      data:
+        prefab: {fileID: 0}
+        spread: 0
+        lifetime: 100
+        launchSpeed: 20
+        damage: 2
