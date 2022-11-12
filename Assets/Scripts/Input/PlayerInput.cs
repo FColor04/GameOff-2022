@@ -9,6 +9,7 @@ public class PlayerInput : MonoBehaviour
     [SerializeField] private PlayerMovement pm;
     [SerializeField] private PlayerCamera pc;
     [SerializeField] private PlayerInteraction pi;
+    [SerializeField] private PlayerShooting ps;
     [SerializeField] private CrouchController cc;
     [SerializeField] private JumpController jc;
 
@@ -25,6 +26,14 @@ public class PlayerInput : MonoBehaviour
         controls.Gameplay.Crouch.canceled += ReadCrouchInput;
         controls.Gameplay.Jump.canceled += ReadJumpInput;
         controls.Gameplay.Interact.canceled += ReadInteractionInput;
+
+        controls.Gameplay.PrimaryFire.started += ReadPrimaryFireInput;
+        controls.Gameplay.PrimaryFire.performed += ReadPrimaryFireInput;
+        controls.Gameplay.PrimaryFire.canceled += ReadPrimaryFireInput;
+
+        controls.Gameplay.SecondaryFire.started += ReadSecondaryFireInput;
+        controls.Gameplay.SecondaryFire.performed += ReadSecondaryFireInput;
+        controls.Gameplay.SecondaryFire.canceled += ReadSecondaryFireInput;
     }
     void OnEnable()
     {
@@ -34,6 +43,8 @@ public class PlayerInput : MonoBehaviour
         controls.Gameplay.Jump.Enable();
         controls.Gameplay.Crouch.Enable();
         controls.Gameplay.Interact.Enable();
+        controls.Gameplay.PrimaryFire.Enable();
+        controls.Gameplay.SecondaryFire.Enable();
     }
 
     void Disable()
@@ -44,6 +55,8 @@ public class PlayerInput : MonoBehaviour
         controls.Gameplay.Jump.Disable();
         controls.Gameplay.Crouch.Disable();
         controls.Gameplay.Interact.Disable();
+        controls.Gameplay.PrimaryFire.Disable();
+        controls.Gameplay.SecondaryFire.Disable();
     }
     void OnDestroy() => controls.Dispose();
 
@@ -52,4 +65,34 @@ public class PlayerInput : MonoBehaviour
     void ReadCrouchInput(InputAction.CallbackContext callbackContext) => cc.Crouching = (callbackContext.phase == InputActionPhase.Started || callbackContext.phase == InputActionPhase.Performed);
     void ReadJumpInput(InputAction.CallbackContext callbackContext) => jc.JumpInput = (callbackContext.phase == InputActionPhase.Started || callbackContext.phase == InputActionPhase.Performed);
     void ReadInteractionInput(InputAction.CallbackContext callbackContext) => pi.Interact();
+    void ReadPrimaryFireInput(InputAction.CallbackContext callbackContext)
+    {
+        switch (callbackContext.phase)
+        {
+            case InputActionPhase.Started:
+                ps.OnPrimaryFireButtonPressed();
+                break;
+            case InputActionPhase.Performed:
+                ps.OnPrimaryFireButtonHeld();
+                break;
+            case InputActionPhase.Canceled:
+                ps.OnPrimaryFireButtonReleased();
+                break;
+        }
+    }
+    void ReadSecondaryFireInput(InputAction.CallbackContext callbackContext)
+    {
+        switch (callbackContext.phase)
+        {
+            case InputActionPhase.Started:
+                ps.OnSecondaryFireButtonPressed();
+                break;
+            case InputActionPhase.Performed:
+                ps.OnSecondaryFireButtonHeld();
+                break;
+            case InputActionPhase.Canceled:
+                ps.OnSecondaryFireButtonReleased();
+                break;
+        }
+    }
 }

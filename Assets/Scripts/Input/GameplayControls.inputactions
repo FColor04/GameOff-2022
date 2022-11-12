@@ -60,7 +60,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Secondard Fire",
+                    "name": "Secondary Fire",
                     "type": "Button",
                     "id": "d37555dc-2196-433b-bf9f-bdc73b02aaae",
                     "expectedControlType": "Button",
@@ -198,7 +198,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Secondard Fire",
+                    "action": "Secondary Fire",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

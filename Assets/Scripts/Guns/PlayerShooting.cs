@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -5,14 +6,48 @@ public class PlayerShooting : MonoBehaviour
 {
     [SerializeField] private PlayerEquipment equipment;
     private float lastShotFired;
+    private GunData GunData { get => equipment?.equippedGun?.GunData; }
 
-    public void OnFireButtonPressed(InputAction.CallbackContext context)
+    public void OnPrimaryFireButtonPressed()
     {
-        if (!equipment || !equipment.equippedGun || !equipment.equippedGun.GunData) return;
+        if (!equipment || !equipment.equippedGun || !GunData) return;
         var gunInstance = equipment.equippedGun;
-        var gunData = equipment.equippedGun.GunData;
-        if ((context.phase != InputActionPhase.Started) && !(context.phase == InputActionPhase.Performed && gunData.isAutomatic)) return;
-        if(Time.time < lastShotFired + 1f / gunData.fireRate) return;
+        FirePrimary();
+    }
+    public void OnPrimaryFireButtonHeld()
+    {
+        if (!GunData.isAutomatic) return;
+        FirePrimary();
+    }
+    public void OnPrimaryFireButtonReleased()
+    {
+
+    }
+
+    private void FirePrimary()
+    {
+        if (!GunData || Time.time < lastShotFired + 1f / GunData.fireRate) return;
+
+    }
+
+
+    #region Secondary Fire
+    public void OnSecondaryFireButtonPressed()
+    {
+
+    }
+    public void OnSecondaryFireButtonHeld()
+    {
+
+    }
+    public void OnSecondaryFireButtonReleased()
+    {
+
+    }
+
+    private void FireSecondary()
+    {
         
     }
+    #endregion
 }
