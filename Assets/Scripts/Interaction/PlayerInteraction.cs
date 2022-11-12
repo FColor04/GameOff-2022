@@ -17,7 +17,7 @@ public class PlayerInteraction : MonoBehaviour
     {
         var direction = playerCamera.Camera.forward;
         var position = playerCamera.Camera.position;
-        var sphereCastResults = Physics.SphereCastAll(position, interactionRadius, direction);
+        var sphereCastResults = Physics.SphereCastAll(position, interactionRadius, direction, interactionDistance);
         var interactables = sphereCastResults.Select(hit => (hit, hit.collider.GetComponent<IInteractable>() ?? hit.collider.GetComponentInParent<IInteractable>())).Where(hit => hit.Item2 != null);
         var interactablesPriorityOrdered = interactables.OrderBy(interactable => EvaulatueInteractionPriortiy(interactable.Item1, interactable.Item2, position, direction));
         var highestPrioInteractable = interactablesPriorityOrdered.FirstOrDefault().Item2;
