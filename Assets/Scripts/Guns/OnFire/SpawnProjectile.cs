@@ -11,7 +11,7 @@ public class SpawnProjectile : IAction
     public float launchSpeed = 20f;
     public float damage = 2f;
 
-    public IEnumerator Execute(GunInstance gunInstance, Camera camera)
+    public IEnumerator Execute(GunInstance gunInstance, Camera camera, GunAnimations animations)
     {
         yield return null;
     }

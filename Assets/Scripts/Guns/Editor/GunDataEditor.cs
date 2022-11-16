@@ -8,16 +8,24 @@ using UnityEngine;
 [CustomEditor(typeof(GunData))]
 public class GunDataEditor : Editor
 {
-    private ReorderableGenericList<IAction> ActionListGUI;
+    private ReorderableGenericList<IAction> PrimaryFireActionListGUI;
+    private ReorderableGenericList<IAction> SecondaryFireActionListGUI;
 
     void OnEnable()
     {
-        ActionListGUI = new((target as GunData).onPrimaryFireActions);
-        ActionListGUI.headerOverride = "OnPrimaryFire";
+        PrimaryFireActionListGUI = SetupReorderableList((target as GunData).onPrimaryFireActions, "OnPrimaryFire");
+        SecondaryFireActionListGUI = SetupReorderableList((target as GunData).onSecondaryFireActions, "OnSecondaryFire");
+    }
+
+    private ReorderableGenericList<IAction> SetupReorderableList(List<IAction> target, string header)
+    {
         var dropdownOptions = UnityEditor.TypeCache.GetTypesDerivedFrom<IAction>().Select(type => (StringUtil.FieldNameToLabelText(type.Name), type)).ToList();
-        ActionListGUI.addDropdownOptions = dropdownOptions;
-        ActionListGUI.DrawElementCallback = (rect, index, isActive, isFocused) => DrawAction(rect, ActionListGUI[index]);
-        ActionListGUI.GetElementHeightCallback = (index) => GetActionHeight(ActionListGUI[index]);
+        var list = new ReorderableGenericList<IAction>(target);
+        list.headerOverride = header;
+        list.addDropdownOptions = dropdownOptions;
+        list.DrawElementCallback = (rect, index, isActive, isFocused) => DrawAction(rect, list[index]);
+        list.GetElementHeightCallback = (index) => GetActionHeight(list[index]);
+        return list;
     }
 
     private void DrawAction(Rect rect, IAction action)
@@ -31,7 +39,8 @@ public class GunDataEditor : Editor
         base.OnInspectorGUI();
         EditorGUILayout.Space();
         EditorGUI.BeginChangeCheck();
-        ActionListGUI.DrawLayout();
+        PrimaryFireActionListGUI.DrawLayout();
+        SecondaryFireActionListGUI.DrawLayout();
         if (EditorGUI.EndChangeCheck())
             EditorUtility.SetDirty(target);
     }

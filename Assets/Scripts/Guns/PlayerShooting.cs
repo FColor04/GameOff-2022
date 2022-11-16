@@ -26,7 +26,6 @@ public class PlayerShooting : MonoBehaviour
     {
         holdingPrimaryFireButton = true;
         if (!equipment || !equipment.EquippedGun || !GunData) return;
-        var gunInstance = equipment.EquippedGun;
         FirePrimary();
     }
     public void OnPrimaryFireButtonReleased(InputAction.CallbackContext callback)
@@ -40,15 +39,14 @@ public class PlayerShooting : MonoBehaviour
         if (currentlyShooting || !GunData || Time.time < lastShotFired + 1f / GunData.fireRate) return;
         currentlyShooting = true;
         StartCoroutine(ExecuteActions(GunData.onPrimaryFireActions));
-        gunAnimations.PlayRecoil();
     }
 
     private IEnumerator ExecuteActions(List<IAction> actions)
     {
         foreach (var action in actions)
         {
-            if(action == null) continue;
-            var enumerator = action.Execute(equipment.EquippedGun, playerCamera.Camera);
+            if (action == null) continue;
+            var enumerator = action.Execute(equipment.EquippedGun, playerCamera.Camera, gunAnimations);
             while (enumerator.MoveNext())
             {
                 if (enumerator.Current == null) enumerator.MoveNext();
@@ -59,20 +57,25 @@ public class PlayerShooting : MonoBehaviour
         lastShotFired = Time.time;
     }
 
+    private void FireSecondary()
+    {
+        if (currentlyShooting || !GunData || Time.time < lastShotFired + 1f / GunData.fireRate) return;
+        currentlyShooting = true;
+        StartCoroutine(ExecuteActions(GunData.onSecondaryFireActions));
+    }
+
 
     #region Secondary Fire
     public void OnSecondaryFireButtonPressed(InputAction.CallbackContext callback)
     {
         holdingSecondaryFireButton = true;
+        if (!equipment || !equipment.EquippedGun || !GunData) return;        
+        FireSecondary();
     }
     public void OnSecondaryFireButtonReleased(InputAction.CallbackContext callback)
     {
         holdingSecondaryFireButton = false;
     }
 
-    private void FireSecondary()
-    {
-
-    }
     #endregion
 }

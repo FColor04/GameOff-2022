@@ -22,7 +22,7 @@ MonoBehaviour:
   insideRotation: 0
   outsideShape: 1
   outsideNgon: 4
-  outsideColor: {r: 1, g: 1, b: 1, a: 0.07058824}
+  outsideColor: {r: 1, g: 1, b: 1, a: 1}
   runtimeOutsideOffset: 0
   outsideOffset: 0
   runtimeOutsideRotation: 0

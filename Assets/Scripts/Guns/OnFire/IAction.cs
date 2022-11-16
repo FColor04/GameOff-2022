@@ -3,5 +3,5 @@ using UnityEngine;
 
 public interface IAction
 {
-    public IEnumerator Execute(GunInstance gunInstance, Camera camera);
+    public IEnumerator Execute(GunInstance gunInstance, Camera camera, GunAnimations animations);
 }

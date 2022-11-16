@@ -6,15 +6,18 @@ using UnityEngine.Assertions.Must;
 [ExecuteAlways]
 public class CrouchController : MonoBehaviour
 {
+    [SerializeField] private PlayerMovement pm;
     [SerializeField] private ConfigurableJoint spineJoint;
     [SerializeField] private Rigidbody bodyRB;
     [SerializeField] private Rigidbody headRB;
     [SerializeField] private CapsuleCollider headCollider;
-    [SerializeField] private CapsuleCollider legsCollider;
+    [SerializeField] private CapsuleCollider legsCollider;    
+    [SerializeField]private float antiDecapitationLimit = .5f;
+    [SerializeField]private float crouchLen;
+    [SerializeField]private float standingLen;
+    [SerializeField]private float movementPenalty = .3f;
 
-    public float antiDecapitationLimit = .5f;
-    public float crouchLen;
-    public float standingLen;
+
     private bool crouching = false;
     public bool Crouching
     {
@@ -23,6 +26,7 @@ public class CrouchController : MonoBehaviour
         {
             if (crouching == value) return;
             crouching = value;
+            pm.MovementSpeedModifiers["Crouch"] = crouching ? 1 - movementPenalty : 1f;
             headRB.WakeUp();
         }
     }

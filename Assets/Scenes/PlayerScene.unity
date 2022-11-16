@@ -239,6 +239,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c64fefcba5624dc45b04fe7d8b196954, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pm: {fileID: 375801328}
   spineJoint: {fileID: 1457816832}
   bodyRB: {fileID: 375801322}
   headRB: {fileID: 1457816831}
@@ -247,6 +248,7 @@ MonoBehaviour:
   antiDecapitationLimit: 0.5
   crouchLen: 1
   standingLen: 1.5
+  movementPenalty: 0.3
 --- !u!114 &375801324
 MonoBehaviour:
   m_ObjectHideFlags: 0
