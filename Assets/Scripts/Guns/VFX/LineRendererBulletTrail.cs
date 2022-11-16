@@ -10,6 +10,8 @@ public class LineRendererBulletTrail : BulletTrail
 
     public override Vector3 StartPoint { set { lr.SetPosition(0, value); lr.material.SetFloat("_LineLength", Length); } }
     public override Vector3 EndPoint { set { lr.SetPosition(1, value); lr.material.SetFloat("_LineLength", Length); } }
+    private float lifetime;
+    public override float Lifetime { set {lifetime = value; lr.material.SetFloat("_LifeTime", lifetime);} }
     protected override void OnEnable()
     {
         base.OnEnable();

@@ -1,13 +1,9 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class PlayerEquipment : MonoBehaviour
 {
-    public Transform GunAnchor;
+    [SerializeField] private Transform GunAnchor;
+    [SerializeField] private GunAnimations gunAnimations;
     private GunInstance m_equippedGun;
     public GunInstance EquippedGun
     {
@@ -28,6 +24,7 @@ public class PlayerEquipment : MonoBehaviour
             m_equippedGun.transform.localPosition = Vector3.zero;
             m_equippedGun.transform.localRotation = Quaternion.identity;
             m_equippedGun.transform.localScale = Vector3.one;
+            gunAnimations.AnimationSet = m_equippedGun.GunData?.animationSet;
             m_equippedGun.gameObject.SetLayerRecursive(LayerMask.NameToLayer("Player"));
         }
     }

@@ -15,7 +15,7 @@ MonoBehaviour:
   crosshairOverride: {fileID: 0}
   fireRate: 2
   isAutomatic: 0
-  animationSet: {fileID: 0}
+  animationSet: {fileID: 9100000, guid: a7005e21a58eb1a43bd1ec8578e0b129, type: 2}
   onPrimaryFireActions:
   - rid: 2901371847834861570
   onSecondaryFireActions: []

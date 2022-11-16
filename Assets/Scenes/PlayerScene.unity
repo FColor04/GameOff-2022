@@ -341,6 +341,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   GunAnchor: {fileID: 789060148}
+  gunAnimations: {fileID: 375801332}
 --- !u!114 &375801330
 MonoBehaviour:
   m_ObjectHideFlags: 0

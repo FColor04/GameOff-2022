@@ -34,6 +34,7 @@ public class RaycastShoot : IAction
             var startPosition = gunInstance.muzzlePositionTransform.position.TransformFOV(camera, 35f);
             var furthestHitPoint = hits.Length > 0 ? hits.Last().point : ray.origin + direction * maxRange;
             var bulletTrailInstance = GameObject.Instantiate(bulletTrail);
+            bulletTrailInstance.Lifetime = .35f;
             bulletTrailInstance.StartPoint = startPosition;
             bulletTrailInstance.EndPoint = furthestHitPoint;
         }

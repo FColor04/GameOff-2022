@@ -6,7 +6,7 @@ public abstract class BulletTrail : MonoBehaviour
 {
     public abstract Vector3 StartPoint { set; }
     public abstract Vector3 EndPoint { set; }
-    public float lifetime;
+    public abstract float Lifetime { set; }
     protected float spawnTime;
     protected virtual void OnEnable() => spawnTime = Time.time;
 }
