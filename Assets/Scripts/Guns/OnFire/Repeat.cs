@@ -8,10 +8,18 @@ public class Repeat : IAction
     public int repetitions;
     [SerializeReference] public List<IAction> actions;
 
-    public IEnumerator Execute(GunData gunData, Vector3 direction, Vector3 position)
+    public IEnumerator Execute(GunInstance gunInstance, Camera camera)
     {
-        for(int i = 0; i < repetitions; i++)
-            actions.ForEach(action => action.Execute(gunData, direction, position));
-        yield return null;
+        for (int i = 0; i < repetitions; i++)
+            foreach (var action in actions)
+            {
+                if (action == null) continue;
+                var enumerator = action.Execute(gunInstance, camera);
+                while (enumerator.MoveNext())
+                {
+                    if (enumerator.Current == null) enumerator.MoveNext();
+                    else yield return enumerator.Current;
+                }
+            }
     }
 }

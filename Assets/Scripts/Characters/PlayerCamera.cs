@@ -5,7 +5,8 @@ using UnityEngine;
 
 public class PlayerCamera : MonoBehaviour
 {
-    [field: SerializeField] public Transform Camera { get; set; }
+    [field: SerializeField] public Transform CameraRoot { get; set; }
+    [field: SerializeField] public Camera Camera { get; set; }
 
 
     public float MinAngle = -90f + float.Epsilon, MaxAngle = 90f - float.Epsilon;
@@ -38,9 +39,9 @@ public class PlayerCamera : MonoBehaviour
         rx = Mathf.Clamp(rx, MinAngle, MaxAngle);
         var relativeVelocity = Quaternion.Euler(0, -ry, 0) * _rigidbody.velocity;
 
-        Camera.localEulerAngles = SmoothDampEuler(Camera.localEulerAngles,
+        CameraRoot.localEulerAngles = SmoothDampEuler(CameraRoot.localEulerAngles,
             new Vector3(-rx, ry, Mathf.Clamp(-relativeVelocity.x * sidewaysTilt, -maxZrotation, maxZrotation)), ref velocityTilt, smoothingTime);
-        Camera.localPosition = Vector3.SmoothDamp(Camera.localPosition, Quaternion.Euler(0, ry, 0) * Vector3.right * (_playerMovement.MovementInput.x * sidewaysMovement),
+        CameraRoot.localPosition = Vector3.SmoothDamp(CameraRoot.localPosition, Quaternion.Euler(0, ry, 0) * Vector3.right * (_playerMovement.MovementInput.x * sidewaysMovement),
             ref velocityMovement, movementSmoothingTime);
     }
 

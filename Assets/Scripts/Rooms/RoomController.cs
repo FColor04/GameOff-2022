@@ -18,38 +18,39 @@ namespace Rooms
         {
             var availableExits = new List<(Vector2Int worldPosition, Vector2Int direction)>();
             var exitPointer = 0;
-            var lastExitPointer = 0; //prevent infinite loops
             SpawnRoom(startRoom, 0, Vector2Int.zero, null, ref availableExits, ref exitPointer);
             while (instances.Count < this.roomCount && availableExits.Count > 0)
             {
-                if (exitPointer > lastExitPointer + availableExits.Count * 2)
-                    break;
                 exitPointer++;
-                var exit = availableExits[(exitPointer++) % availableExits.Count]; //round robbin randomness
+                var hasSpawned = false;
                 var roomPoolPermutation = pool.RandomPermutation();
-                foreach (var roomTemplate in roomPoolPermutation)
+                var exitCount = availableExits.Count;
+                for (int i = 0; i < exitCount; i++)
                 {
-                    var hasSpawned = false;
-                    var randomDoorwayPermutation = roomTemplate.doorways.RandomPermutation();
-                    foreach (var doorway in randomDoorwayPermutation)
+                    var exit = availableExits[(exitPointer++) % availableExits.Count]; //round robbin randomness
+                    foreach (var roomTemplate in roomPoolPermutation)
                     {
-                        var rotation = RotateMatchExits(exit.direction, -doorway.direction);
-                        var rotatedDoorwayPosition = (doorway.position - roomTemplate.MinCorner).Rotate(rotation) + roomTemplate.MinCorner;
-                        var newMinCornerWorldPosition = exit.worldPosition + exit.direction + (roomTemplate.MinCorner - rotatedDoorwayPosition);
-                        var requiredWorldPositions = roomTemplate.OccupiedCells.Select(vector => vector.Rotate(rotation) + newMinCornerWorldPosition).ToArray();
-                        if(requiredWorldPositions.Length < roomTemplate.GridRowCount * roomTemplate.GridColumnCount) Debug.LogError("wtf");
-                        if (CheckHasSpace(requiredWorldPositions))
+                        var randomDoorwayPermutation = roomTemplate.doorways.RandomPermutation();
+                        foreach (var doorway in randomDoorwayPermutation)
                         {
-                            availableExits.RemoveAt(exitPointer % availableExits.Count);
-                            var roomInstance = SpawnRoom(roomTemplate, rotation, newMinCornerWorldPosition, doorway, ref availableExits, ref exitPointer);
-                            lastExitPointer = exitPointer;
-                            hasSpawned = true;
-                            break;
+                            var rotation = RotateMatchExits(exit.direction, -doorway.direction);
+                            var rotatedDoorwayPosition = (doorway.position - roomTemplate.MinCorner).Rotate(rotation) + roomTemplate.MinCorner;
+                            var newMinCornerWorldPosition = exit.worldPosition + exit.direction + (roomTemplate.MinCorner - rotatedDoorwayPosition);
+                            var requiredWorldPositions = roomTemplate.OccupiedCells.Select(vector => vector.Rotate(rotation) + newMinCornerWorldPosition).ToArray();
+                            if (requiredWorldPositions.Length < roomTemplate.GridRowCount * roomTemplate.GridColumnCount) Debug.LogError("wtf");
+                            if (CheckHasSpace(requiredWorldPositions))
+                            {
+                                availableExits.RemoveAt(exitPointer % availableExits.Count);
+                                var roomInstance = SpawnRoom(roomTemplate, rotation, newMinCornerWorldPosition, doorway, ref availableExits, ref exitPointer);
+                                hasSpawned = true;
+                                break;
+                            }
                         }
+                        if (hasSpawned) break;
                     }
                     if (hasSpawned) break;
                 }
-
+                if (!hasSpawned) break;
             }
             Debug.Log($"spawned {instances.Count} / {this.roomCount} rooms");
         }

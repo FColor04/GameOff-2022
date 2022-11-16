@@ -21,6 +21,6 @@ public class PlayerMovement : MonoBehaviour
 
     void FixedUpdate()
     {
-        MovementController.XZPlaneMovement = Quaternion.Euler(0, 0, -PlayerCamera.RY) * MovementInput * Speed * MovementSpeedModifiers.Values.Aggregate((x, y) => x * y);
+        MovementController.XZPlaneMovement = Quaternion.Euler(0, 0, -PlayerCamera.RY) * MovementInput * Speed * MovementSpeedModifiers.Values.Aggregate(1f, (x, y) => x * y);
     }
 }

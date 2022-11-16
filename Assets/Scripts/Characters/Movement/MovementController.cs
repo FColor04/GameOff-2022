@@ -37,10 +37,10 @@ public class MovementController : MonoBehaviour
         if (XZPlaneMovement.sqrMagnitude <= float.Epsilon) return;
         var floorParallelRotation = Grounded ? Quaternion.FromToRotation(Vector3.up, GroundNormal) : Quaternion.identity;
         var floorParallelMovement = floorParallelRotation * XZPlaneMovement._x0y();
-        floorParallelMovement += GroundNormal._0y0();
         var rotationXZMagnitudeLossFactor = XZPlaneMovement.magnitude / floorParallelMovement._x0z().magnitude;
-        var yChannelNormalizationLossFactor = floorParallelMovement.magnitude / floorParallelMovement._x0z().magnitude;
-        vc.AddOverwriteMovement(new(floorParallelMovement, floorParallelMovement.magnitude * rotationXZMagnitudeLossFactor * yChannelNormalizationLossFactor, VelocityBlendMode.Overwrite, VelocityChannelMask.XZ), 0f, 0);
+        var yChannelNormalizationLossFactor = floorParallelMovement.magnitude / floorParallelMovement._x0z().magnitude;        
+        var speed = floorParallelMovement.magnitude * rotationXZMagnitudeLossFactor * yChannelNormalizationLossFactor;
+        vc.AddOverwriteMovement(new(floorParallelMovement, speed, VelocityBlendMode.Overwrite, VelocityChannelMask.XZ), 0f, 0);
     }
 
     public void OnCollisionStay(Collision collision)

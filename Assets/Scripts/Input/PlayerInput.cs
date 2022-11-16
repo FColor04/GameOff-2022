@@ -27,13 +27,11 @@ public class PlayerInput : MonoBehaviour
         controls.Gameplay.Jump.canceled += ReadJumpInput;
         controls.Gameplay.Interact.canceled += ReadInteractionInput;
 
-        controls.Gameplay.PrimaryFire.started += ReadPrimaryFireInput;
-        controls.Gameplay.PrimaryFire.performed += ReadPrimaryFireInput;
-        controls.Gameplay.PrimaryFire.canceled += ReadPrimaryFireInput;
+        controls.Gameplay.PrimaryFire.started += ps.OnPrimaryFireButtonPressed;
+        controls.Gameplay.PrimaryFire.canceled += ps.OnPrimaryFireButtonReleased;
 
-        controls.Gameplay.SecondaryFire.started += ReadSecondaryFireInput;
-        controls.Gameplay.SecondaryFire.performed += ReadSecondaryFireInput;
-        controls.Gameplay.SecondaryFire.canceled += ReadSecondaryFireInput;
+        controls.Gameplay.SecondaryFire.started += ps.OnSecondaryFireButtonPressed;
+        controls.Gameplay.SecondaryFire.canceled += ps.OnSecondaryFireButtonReleased;
     }
     void OnEnable()
     {
@@ -65,34 +63,4 @@ public class PlayerInput : MonoBehaviour
     void ReadCrouchInput(InputAction.CallbackContext callbackContext) => cc.Crouching = (callbackContext.phase == InputActionPhase.Started || callbackContext.phase == InputActionPhase.Performed);
     void ReadJumpInput(InputAction.CallbackContext callbackContext) => jc.JumpInput = (callbackContext.phase == InputActionPhase.Started || callbackContext.phase == InputActionPhase.Performed);
     void ReadInteractionInput(InputAction.CallbackContext callbackContext) => pi.Interact();
-    void ReadPrimaryFireInput(InputAction.CallbackContext callbackContext)
-    {
-        switch (callbackContext.phase)
-        {
-            case InputActionPhase.Started:
-                ps.OnPrimaryFireButtonPressed();
-                break;
-            case InputActionPhase.Performed:
-                ps.OnPrimaryFireButtonHeld();
-                break;
-            case InputActionPhase.Canceled:
-                ps.OnPrimaryFireButtonReleased();
-                break;
-        }
-    }
-    void ReadSecondaryFireInput(InputAction.CallbackContext callbackContext)
-    {
-        switch (callbackContext.phase)
-        {
-            case InputActionPhase.Started:
-                ps.OnSecondaryFireButtonPressed();
-                break;
-            case InputActionPhase.Performed:
-                ps.OnSecondaryFireButtonHeld();
-                break;
-            case InputActionPhase.Canceled:
-                ps.OnSecondaryFireButtonReleased();
-                break;
-        }
-    }
 }

@@ -13,49 +13,22 @@ MonoBehaviour:
   m_Name: Pistol
   m_EditorClassIdentifier: 
   crosshairOverride: {fileID: 0}
-  fireRate: 15
+  fireRate: 2
   isAutomatic: 0
+  animationSet: {fileID: 0}
   onPrimaryFireActions:
-  - rid: 2901371761284612113
-  - rid: 2901371761284612115
-  - rid: 2901371761284612114
+  - rid: 2901371847834861570
   onSecondaryFireActions: []
   references:
     version: 2
     RefIds:
-    - rid: 2901371761284612113
+    - rid: 2901371847834861570
       type: {class: RaycastShoot, ns: , asm: Assembly-CSharp}
       data:
-        bulletTrail: {fileID: 0}
-        bulletImpact: {fileID: 0}
-        onHitVFX: {fileID: 0}
+        bulletTrail: {fileID: -8367825369086262066, guid: 3cb8f2b2f2fe3ef49b08770ef144b6fe, type: 3}
+        impactDecal: {fileID: 0}
+        hitVFX: {fileID: 0}
         spread: 0
         maxRange: 100
         damage: 2
-    - rid: 2901371761284612114
-      type: {class: SpawnProjectile, ns: , asm: Assembly-CSharp}
-      data:
-        prefab: {fileID: 0}
-        spread: 0
-        lifetime: 100
-        launchSpeed: 20
-        damage: 2
-    - rid: 2901371761284612115
-      type: {class: Repeat, ns: , asm: Assembly-CSharp}
-      data:
-        repetitions: 0
-        actions:
-        - rid: 2901371761284612122
-        - rid: 2901371761284612121
-    - rid: 2901371761284612121
-      type: {class: Wait, ns: , asm: Assembly-CSharp}
-      data:
-        duration: 0.1
-    - rid: 2901371761284612122
-      type: {class: SpawnProjectile, ns: , asm: Assembly-CSharp}
-      data:
-        prefab: {fileID: 0}
-        spread: 0
-        lifetime: 100
-        launchSpeed: 20
-        damage: 2
+        piercingCount: 0

@@ -15,8 +15,8 @@ public class PlayerInteraction : MonoBehaviour
 
     void FixedUpdate()
     {
-        var direction = playerCamera.Camera.forward;
-        var position = playerCamera.Camera.position;
+        var direction = playerCamera.CameraRoot.forward;
+        var position = playerCamera.CameraRoot.position;
         var sphereCastResults = Physics.SphereCastAll(position, interactionRadius, direction, interactionDistance);
         var interactables = sphereCastResults.Select(hit => (hit, hit.collider.GetComponent<IInteractable>() ?? hit.collider.GetComponentInParent<IInteractable>())).Where(hit => hit.Item2 != null);
         var interactablesPriorityOrdered = interactables.OrderBy(interactable => EvaulatueInteractionPriortiy(interactable.Item1, interactable.Item2, position, direction));
@@ -25,7 +25,7 @@ public class PlayerInteraction : MonoBehaviour
         lookTarget?.NotifyLookedAway();
         lookTarget = highestPrioInteractable;
         lookTarget?.NotifyLookedAt();
-        if (PickupText) PickupText.text = lookTarget.Message;
+        if (PickupText) PickupText.text = lookTarget?.Message;
     }
 
     public void Interact()

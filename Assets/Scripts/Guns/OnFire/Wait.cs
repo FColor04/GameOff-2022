@@ -5,7 +5,7 @@ using UnityEngine;
 public class Wait : IAction
 {
     public float duration = .1f;
-    public IEnumerator Execute(GunData gunData, Vector3 direction, Vector3 position)
+    public IEnumerator Execute(GunInstance gunInstance, Camera camera)
     {
         yield return new WaitForSeconds(duration);
     }

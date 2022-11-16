@@ -2,9 +2,25 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using UnityEngine.UIElements;
 
 public static class VectorUtil
 {
+
+    public static Vector3 TransformFOV(this Vector3 positionVector, Camera camera, float desiredFOV)
+    {
+        //temporarily change camera FOV
+        var oldFOV = camera.fieldOfView;
+        camera.fieldOfView = desiredFOV;
+        //get viewport coordinates of point
+        var viewportPoint = camera.WorldToViewportPoint(positionVector);
+        
+        //reset camera FOV
+        camera.fieldOfView = oldFOV;
+
+        //generate worldPoint
+        return camera.ViewportPointToRay(viewportPoint._xy1()).GetPoint(viewportPoint.z);
+    }
 
     public static Vector2Int Rotate(this Vector2Int vector, int rotation)
     {
@@ -87,7 +103,7 @@ public static class VectorUtil
         }
         return clampedPath.ToArray();
     }
-    
+
     public static Vector2 RotateAround(this Vector2 vector, Vector2 origin, float angle)
     {
         return vector;
