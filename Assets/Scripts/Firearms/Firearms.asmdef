@@ -1,0 +1,18 @@
+{
+    "name": "Firearms",
+    "rootNamespace": "",
+    "references": [
+        "GUID:e07ad609b2b9fef4793424a5b25f6511",
+        "GUID:1146d469d5454294f98f5f044037897d",
+        "GUID:188a9674bf62d2a46b6fa86cc37dd749"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

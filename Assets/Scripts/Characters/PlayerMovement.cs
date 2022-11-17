@@ -12,9 +12,6 @@ public class PlayerMovement : MonoBehaviour
     private MovementController cached_movementController;
     private MovementController MovementController { get => cached_movementController ??= GetComponent<MovementController>(); }
 
-    private PlayerEquipment cached_playerEquipment;
-    private PlayerEquipment PlayerEquipment { get => cached_playerEquipment ??= GetComponent<PlayerEquipment>(); }
-
     public Vector2 MovementInput { get; set; }
     [field: SerializeField] public float Speed { get; set; } = 7f;
     public readonly Dictionary<string, float> MovementSpeedModifiers = new();
